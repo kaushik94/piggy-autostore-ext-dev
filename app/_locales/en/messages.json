@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "dev-autostore-ext",
+    "description": "The name of the application"
+  },
+  "appDescription": {
+    "message": "A chrome extension to generate YML snippets of network requests",
+    "description": "The description of the application"
+  }
+}
