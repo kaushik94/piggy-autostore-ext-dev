@@ -1,8 +1,8 @@
 {
-  "name": "__MSG_appName__",
+  "name": "Courier",
   "version": "0.0.1",
   "manifest_version": 2,
-  "description": "__MSG_appDescription__",
+  "description": "An extension to analyse network panel data and copy network request post data to clipboard",
   "icons": {
     "16": "images/courier_dota.png",
     "128": "images/courier_dota.png"
