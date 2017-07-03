@@ -45,7 +45,7 @@ function onEvent(debuggeeId, message, params) {
     requestDiv.appendChild(requestLine);
     var queryStringParams = parseQueryString(params.request);
     if (queryStringParams.params) {
-      appendPostData(params.requestId, '\n'+YAML.stringify(queryStringParams.params, 2)+'\n', params);
+      appendPostData(params.requestId, YAML.stringify(queryStringParams.params, 2), params);
     }
     if (params.request.postData) {
       var postData = document.createElement("div");
@@ -77,7 +77,7 @@ function appendPostData(requestId, postData, paramsObj) {
   requestDiv.appendChild(postDataDiv);
   var clipboardButtonId = 'clipboard-'+requestId;
   var clipboard = new Clipboard('#'+clipboardButtonId);
-
+  let dataString = postData.trim().split("\n").map(line => '\t\t' + line.trim()).join("\n");
   var clipboardApplyButton = document.createElement("button");
   clipboardApplyButton.setAttribute("class", "clipboard-button");
   clipboardApplyButton.innerText = "applyCouponUrl";
@@ -89,7 +89,7 @@ function appendPostData(requestId, postData, paramsObj) {
     dataType: object
     codeProperty: _CODE_
     data:
-        \t${postData}
+    ${dataString}
   `;
 
   var clipboardClearButton = document.createElement("button");
@@ -103,7 +103,7 @@ function appendPostData(requestId, postData, paramsObj) {
     dataType: object
     codeProperty: _CODE_
     data:
-        \t${postData}
+    ${dataString}
   `;
 
   var clipboardResultButton = document.createElement("button");
@@ -117,7 +117,7 @@ function appendPostData(requestId, postData, paramsObj) {
     dataType: object
     codeProperty: _CODE_
     data:
-        \t${postData}
+    ${dataString}
   `;
 
   requestDiv.appendChild(clipboardApplyButton);
