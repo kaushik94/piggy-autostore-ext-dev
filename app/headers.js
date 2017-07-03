@@ -45,13 +45,13 @@ function onEvent(debuggeeId, message, params) {
     requestDiv.appendChild(requestLine);
     var queryStringParams = parseQueryString(params.request);
     if (queryStringParams.params) {
-      appendPostData(params.requestId, '\n'+YAML.stringify(queryStringParams.params, 2)+'\n');
+      appendPostData(params.requestId, '\n'+YAML.stringify(queryStringParams.params, 2)+'\n', params);
     }
     if (params.request.postData) {
       var postData = document.createElement("div");
       var postDataObject = JSON.parse(params.request.postData);
       var yamlPostData = YAML.stringify(postDataObject, 10);
-      appendPostData(params.requestId, yamlPostData);
+      appendPostData(params.requestId, yamlPostData, params);
     }
   } else if (message == "Network.responseReceived") {
     var requestDiv = requests[params.requestId];
@@ -68,7 +68,7 @@ function onEvent(debuggeeId, message, params) {
   }
 }
 
-function appendPostData(requestId, postData) {
+function appendPostData(requestId, postData, paramsObj) {
   var requestDiv = requests[requestId];
   var postDataDiv = document.createElement("div");
   postDataDiv.setAttribute("id", requestId);
@@ -77,10 +77,52 @@ function appendPostData(requestId, postData) {
   requestDiv.appendChild(postDataDiv);
   var clipboardButtonId = 'clipboard-'+requestId;
   var clipboard = new Clipboard('#'+clipboardButtonId);
-  var clipboardButton = document.createElement("button");
-  clipboardButton.setAttribute("class", "clipboard-button");
-  clipboardButton.dataset.clipboardText = postData;
-  requestDiv.appendChild(clipboardButton);
+
+  var clipboardApplyButton = document.createElement("button");
+  clipboardApplyButton.setAttribute("class", "clipboard-button");
+  clipboardApplyButton.innerText = "applyCouponUrl";
+  clipboardApplyButton.dataset.clipboardText = `
+  applyCouponUrl:
+    url: ${paramsObj.request.url}
+    mode: ${paramsObj.request.method}
+    reApplyOnSuccess: true
+    dataType: object
+    codeProperty: _CODE_
+    data:
+        \t${postData}
+  `;
+
+  var clipboardClearButton = document.createElement("button");
+  clipboardClearButton.setAttribute("class", "clipboard-button");
+  clipboardClearButton.innerText = "clearCouponUrl";
+  clipboardClearButton.dataset.clipboardText = `
+  clearCouponUrl:
+    url: ${paramsObj.request.url}
+    mode: ${paramsObj.request.method}
+    reApplyOnSuccess: true
+    dataType: object
+    codeProperty: _CODE_
+    data:
+        \t${postData}
+  `;
+
+  var clipboardResultButton = document.createElement("button");
+  clipboardResultButton.setAttribute("class", "clipboard-button");
+  clipboardResultButton.innerText = "resultUrl";
+  clipboardResultButton.dataset.clipboardText = `
+  resultUrl:
+    url: ${paramsObj.request.url}
+    mode: ${paramsObj.request.method}
+    reApplyOnSuccess: true
+    dataType: object
+    codeProperty: _CODE_
+    data:
+        \t${postData}
+  `;
+
+  requestDiv.appendChild(clipboardApplyButton);
+  requestDiv.appendChild(clipboardClearButton);
+  requestDiv.appendChild(clipboardResultButton);
 }
 
 function appendQueryParams(requestId, response) {
